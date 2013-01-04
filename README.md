@@ -1,4 +1,5 @@
-clinicaltrial.gov-crawler
+clinicaltrials.gov-crawler
 =========================
 
-http://clinicaltrial.gov web-crawler
+http://clinicaltrials.gov web-crawler
+
