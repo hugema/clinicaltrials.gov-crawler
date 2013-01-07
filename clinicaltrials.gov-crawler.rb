@@ -1,7 +1,7 @@
-DIR = '../clinicaltrial.gov-data/'
+DIR = '../clinicaltrials.gov-data/'
 
 require 'anemone'
-HOST = 'http://clinicaltrial.gov'
+HOST = 'http://clinicaltrials.gov'
 PATH = '/ct2/'
 BASE_URI = HOST + PATH + 'crawl/'
 TRIAL_URI = HOST + PATH + 'show/NCT'
