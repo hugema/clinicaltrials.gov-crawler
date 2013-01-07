@@ -7,6 +7,8 @@ BASE_URI = HOST + PATH + 'crawl/'
 TRIAL_URI = HOST + PATH + 'show/NCT'
 DISPLAY_XML = '?displayxml=true'
 
+Dir.mkdir(DIR) unless File.exists?(DIR)
+
 Anemone.crawl(BASE_URI) do |anemone|
   anemone.focus_crawl do |page|
     page.links.keep_if { |link| link.to_s.match(%r{#{BASE_URI}\d+}) }
