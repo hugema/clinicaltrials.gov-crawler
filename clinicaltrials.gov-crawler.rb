@@ -11,7 +11,8 @@ Dir.mkdir(DIR) unless File.exists?(DIR)
 
 Anemone.crawl(BASE_URI) do |anemone|
   anemone.focus_crawl do |page|
-    page.links.keep_if { |link| link.to_s.match(%r{#{BASE_URI}\d+}) }
+    # Follow only page on /crawl/
+    page.links.keep_if { |link| link.to_s.match(%r{^#{BASE_URI}\d+}) }
   end
 
   anemone.on_every_page do |page|
@@ -20,22 +21,25 @@ Anemone.crawl(BASE_URI) do |anemone|
     Anemone.crawl(page.url) do |anemone_trial|
       anemone_trial.focus_crawl do |page|
         page.links
-          .keep_if { |link| link.to_s.match(%r{#{TRIAL_URI}\d+}) }
-          .collect { |link| link += DISPLAY_XML }
           .keep_if do |link| 
-            link.to_s.match(%r{#{TRIAL_URI}(\d+)})
-            begin
-              ! File.file?(DIR + $1 + '.xml')
-            rescue
-              puts 'File error, aborting.'
-              exit
+            # Keep clinical trials only...
+            link.to_s.match(%r{^#{TRIAL_URI}(\d+)})
+            if $1
+              begin
+                # ... if they're not on disk 
+                ! File.file?(DIR + $1 + '.xml')
+              rescue
+                puts 'File error, aborting.'
+                exit
+              end
             end
           end
+          .collect { |link| link += DISPLAY_XML }
       end
 
-      anemone_trial.on_pages_like Regexp.new(TRIAL_URI + '\d+' + Regexp.escape(DISPLAY_XML)) do |page|
+      anemone_trial.on_pages_like Regexp.new('^' + TRIAL_URI + '\d+' + Regexp.escape(DISPLAY_XML)) do |page|
         puts 'Save: ' << page.url.to_s
-        Regexp.new(TRIAL_URI + '(\d+)' + Regexp.escape(DISPLAY_XML)).match (page.url.to_s)
+        Regexp.new('^' + TRIAL_URI + '(\d+)' + Regexp.escape(DISPLAY_XML)).match (page.url.to_s)
         File.open(DIR + $1 + '.xml', 'w') do |file| 
           begin
             file.puts page.body 
