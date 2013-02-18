@@ -14,6 +14,9 @@ Installation
 ---
 
 - Run "bundle install" on command line
-- Configure DIR constant at the top of clinicaltrials.gov-crawler.rb
-- Run "ruby clinicaltrials.gov-crawler.rb" on command line
+- Run "ruby clinicaltrials.gov-crawler.rb target_dir" on command line
 
+Copyright
+---
+
+MIT. See LICENSE for further details.
