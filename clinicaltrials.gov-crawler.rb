@@ -5,8 +5,9 @@ BASE_URI = HOST + PATH + 'crawl/'
 TRIAL_URI = HOST + PATH + 'show/NCT'
 DISPLAY_XML = '?displayxml=true'
 
-dir = ARGV.shift or raise "Usage: clinicaltrials.gov-crawler.rb dir_name";
-Dir.mkdir(dir) unless File.exists?(dir)
+dir = ARGV.shift or raise "Usage: clinicaltrials.gov-crawler.rb dir_name"
+FileUtils.mkdir_p(dir) unless File.exists?(dir)
+dir += '/' unless dir.match(%r{/$})
 
 Anemone.crawl(BASE_URI) do |anemone|
   anemone.focus_crawl do |page|
