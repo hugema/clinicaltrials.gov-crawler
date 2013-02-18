@@ -1,5 +1,3 @@
-DIR = '../clinicaltrials.gov-data/'
-
 require 'anemone'
 HOST = 'http://clinicaltrials.gov'
 PATH = '/ct2/'
@@ -7,7 +5,8 @@ BASE_URI = HOST + PATH + 'crawl/'
 TRIAL_URI = HOST + PATH + 'show/NCT'
 DISPLAY_XML = '?displayxml=true'
 
-Dir.mkdir(DIR) unless File.exists?(DIR)
+dir = ARGV.shift or raise "Usage: clinicaltrials.gov-crawler.rb dir_name";
+Dir.mkdir(dir) unless File.exists?(dir)
 
 Anemone.crawl(BASE_URI) do |anemone|
   anemone.focus_crawl do |page|
@@ -27,7 +26,7 @@ Anemone.crawl(BASE_URI) do |anemone|
             if $1
               begin
                 # ... if they're not on disk 
-                ! File.file?(DIR + $1 + '.xml')
+                ! File.file?(dir + $1 + '.xml')
               rescue
                 puts 'File error, aborting.'
                 exit
@@ -40,7 +39,7 @@ Anemone.crawl(BASE_URI) do |anemone|
       anemone_trial.on_pages_like Regexp.new('^' + TRIAL_URI + '\d+' + Regexp.escape(DISPLAY_XML)) do |page|
         puts 'Save: ' << page.url.to_s
         Regexp.new('^' + TRIAL_URI + '(\d+)' + Regexp.escape(DISPLAY_XML)).match (page.url.to_s)
-        File.open(DIR + $1 + '.xml', 'w') do |file| 
+        File.open(dir + $1 + '.xml', 'w') do |file| 
           begin
             file.puts page.body 
           rescue
